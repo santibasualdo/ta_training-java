@@ -22,7 +22,9 @@ public class LoginSteps {
     @Given("The user enters on the login page")
     public void userEnterOnPage(){
         logger.info("Initializing WebDriver and opening the login page, Thread: {}", Thread.currentThread().getId());
-        driver = DriverManager.getDriver(BrowserType.CHROME);
+        String browserName = System.getProperty("browser", "chrome").toUpperCase();
+        driver = DriverManager.getDriver(BrowserType.valueOf(browserName));
+
         loginPage = new LoginPage(driver);
         inventoryPage = new InventoryPage(driver);
         loginPage.open();
@@ -63,7 +65,6 @@ public class LoginSteps {
         logger.info("Verifying error message, Thread: {}", Thread.currentThread().getId());
         String actualMessage = loginPage.getErrorMessage();
         assertTrue(actualMessage.contains(expectedMessage));
-        DriverManager.quitDriver();
     }
 
     @Then("I am redirected to the inventory page")
@@ -76,6 +77,5 @@ public class LoginSteps {
     public void seeInventoryPageTitle(String expectedTitle){
         logger.info("Verifying inventory page title, Thread: {}", Thread.currentThread().getId());
         assertTrue(inventoryPage.isLogoDisplayed().contains(expectedTitle));
-        DriverManager.quitDriver();
     }
 }
